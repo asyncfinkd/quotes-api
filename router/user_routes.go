@@ -2,7 +2,6 @@ package router
 
 import (
 	"quotes-api/handler"
-	"quotes-api/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -18,5 +17,5 @@ func SetupUserRoutes(app *fiber.App) {
 	api.Get("/quotes/category/:category", handler.GetOnceQuotesByFilter)
 
 	// Authors
-	api.Get("/authors", middleware.Protected(), handler.GetAuthors)
+	api.Get("/authors", handler.GetAuthors)
 }
