@@ -18,6 +18,17 @@ var quotes = []*Quotes{
 	{ID: 1, Text: "Have no fear of perfection - you'll never reach it.", Author: "Salvador Dalí", Category: []string{"Motivation"}},
 }
 
+// @Summary Get all Quotes
+// @Description Get all Quotes
+// @Tags Quotes
+// @Accept json
+// @Produce json
+// @Success 200 {array} Quotes{}
+// @Router /api/quotes [get]
+func GetQuotes(ctx *fiber.Ctx) error {
+	return ctx.Status(fiber.StatusOK).JSON(quotes)
+}
+
 // @Summary Get once Quotes
 // @Description Get once Quotes
 // @Tags Quotes
@@ -25,10 +36,6 @@ var quotes = []*Quotes{
 // @Produce json
 // @Success 200 {object} Quotes{}
 // @Router /api/quotes/{id} [get]
-func GetQuotes(ctx *fiber.Ctx) error {
-	return ctx.Status(fiber.StatusOK).JSON(quotes)
-}
-
 func GetOnceQuotes(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -53,4 +60,30 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 		"success": false,
 		"message": "something is wrong.",
 	})
+}
+
+func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
+	category := ctx.Params("category")
+
+	var reQuotes []*Quotes
+
+	for _, v := range quotes {
+		for _, t := range v.Category {
+			if category == t {
+				reQuotes = append(reQuotes, v)
+			}
+		}
+	}
+
+	if len(reQuotes) > 0 {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": true,
+			"item":    reQuotes,
+		})
+	} else {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": false,
+			"message": "category is not defined",
+		})
+	}
 }
