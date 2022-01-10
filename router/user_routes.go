@@ -20,4 +20,7 @@ func SetupUserRoutes(app *fiber.App) {
 	api.Get("/authors", handler.GetAuthors)
 	api.Get("/authors/:id", handler.GetOnceAuthors)
 	api.Get("/authors/category/:category", handler.AuthorsFilter)
+
+	// Authors TODO
+	api.Post("/add/authors/:category", handler.AddAuthor)
 }

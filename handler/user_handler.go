@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -173,4 +175,38 @@ func AuthorsFilter(ctx *fiber.Ctx) error {
 			"message": "category is not defined",
 		})
 	}
+}
+
+func AddAuthor(ctx *fiber.Ctx) error {
+	// Get Params "category"
+	category := ctx.Params("category")
+	splitedCategory := strings.Split(category, "&")
+
+	// File Upload "field -> document"
+	file, err := ctx.FormFile("document")
+
+	if err != nil {
+		return err
+	}
+
+	// Save value to form-data
+	nameValue := ctx.FormValue("Name")
+
+	// Save file to root directory:
+	ctx.SaveFile(file, fmt.Sprintf("./uploads/images/%s", file.Filename))
+
+	// Fill Array
+	author := &AuthorGallery{
+		ID:       uint(len(authorGallery) + 1),
+		Name:     nameValue,
+		Category: splitedCategory,
+		Url:      file.Filename,
+	}
+
+	authorGallery = append(authorGallery, author)
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    author,
+	})
 }
