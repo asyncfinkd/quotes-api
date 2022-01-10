@@ -11,11 +11,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Create Fake DB for Quotes
 var quotes = []*constant.Quotes{
 	{ID: 0, Text: "There is only one thing that makes a dream impossible to achieve: the fear of failure.", Author: "Paulo Coelho", Category: []string{"Motivation"}},
 	{ID: 1, Text: "Have no fear of perfection - you'll never reach it.", Author: "Salvador Dalí", Category: []string{"Motivation"}},
 }
 
+// Create Fake DB for Authors
 var authorGallery = []*constant.AuthorGallery{
 	{ID: 0, Name: "Salvador Dali", Url: "salvador-dali.jpeg", Category: []string{"Artist"}},
 }

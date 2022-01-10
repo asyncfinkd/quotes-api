@@ -12,10 +12,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Create Fake DB for Users
 var users = []*constant.User{
 	{ID: 0, Name: "Nika Shamiladze", Email: "zxc@gmail.com", Password: "$2a$12$0IelvstJ1QLvFZOH8GM8dOuzu/ouhBNE2DJ3GpfK79dzZ4mO5JuHu", Role: "user"},
 }
 
+// Here we use (bcrypt)
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
