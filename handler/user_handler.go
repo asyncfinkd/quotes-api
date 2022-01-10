@@ -122,3 +122,55 @@ func GetAuthors(ctx *fiber.Ctx) error {
 		"item":    authorGallery,
 	})
 }
+
+func GetOnceAuthors(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+
+	_id, err := strconv.ParseUint(id, 10, 32)
+
+	if err != nil {
+		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "cannot parse id",
+		})
+	}
+
+	for _, v := range authorGallery {
+		if _id == uint64(v.ID) {
+			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+				"success": true,
+				"item":    v,
+			})
+		}
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": false,
+		"message": "Information not found on server",
+	})
+}
+
+func AuthorsFilter(ctx *fiber.Ctx) error {
+	category := ctx.Params("category")
+
+	var reAuthor []*AuthorGallery
+
+	for _, v := range authorGallery {
+		for _, t := range v.Category {
+			if category == t {
+				reAuthor = append(reAuthor, v)
+			}
+		}
+	}
+
+	if len(reAuthor) > 0 {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": true,
+			"item":    reAuthor,
+		})
+	} else {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": false,
+			"message": "category is not defined",
+		})
+	}
+}
