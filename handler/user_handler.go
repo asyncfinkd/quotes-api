@@ -5,29 +5,17 @@ import (
 	"strconv"
 	"strings"
 
+	"quotes-api/constant"
+
 	"github.com/gofiber/fiber/v2"
 )
 
-type Quotes struct {
-	ID       uint     `json:"id"`
-	Text     string   `json:"text"`
-	Author   string   `json:"author"`
-	Category []string `json:"category"`
-}
-
-type AuthorGallery struct {
-	ID       uint     `json:"id"`
-	Url      string   `json:"url"`
-	Category []string `json:"category"`
-	Name     string   `json:"name"`
-}
-
-var quotes = []*Quotes{
+var quotes = []*constant.Quotes{
 	{ID: 0, Text: "There is only one thing that makes a dream impossible to achieve: the fear of failure.", Author: "Paulo Coelho", Category: []string{"Motivation"}},
 	{ID: 1, Text: "Have no fear of perfection - you'll never reach it.", Author: "Salvador Dalí", Category: []string{"Motivation"}},
 }
 
-var authorGallery = []*AuthorGallery{
+var authorGallery = []*constant.AuthorGallery{
 	{ID: 0, Name: "Salvador Dali", Url: "salvador-dali.jpeg", Category: []string{"Artist"}},
 }
 
@@ -88,7 +76,7 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
 	category := ctx.Params("category")
 
-	var reQuotes []*Quotes
+	var reQuotes []*constant.Quotes
 
 	for _, v := range quotes {
 		for _, t := range v.Category {
@@ -124,7 +112,7 @@ func AddQuotes(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON("body parse error")
 	}
 
-	newQuote := &Quotes{
+	newQuote := &constant.Quotes{
 		ID:       uint(len(quotes) + 1),
 		Text:     *body.Text,
 		Author:   *body.Author,
@@ -208,7 +196,7 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 func AuthorsFilter(ctx *fiber.Ctx) error {
 	category := ctx.Params("category")
 
-	var reAuthor []*AuthorGallery
+	var reAuthor []*constant.AuthorGallery
 
 	for _, v := range authorGallery {
 		for _, t := range v.Category {
@@ -250,7 +238,7 @@ func AddAuthor(ctx *fiber.Ctx) error {
 	ctx.SaveFile(file, fmt.Sprintf("./uploads/images/%s", file.Filename))
 
 	// Fill Array
-	author := &AuthorGallery{
+	author := &constant.AuthorGallery{
 		ID:       uint(len(authorGallery) + 1),
 		Name:     nameValue,
 		Category: splitedCategory,

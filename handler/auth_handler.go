@@ -2,6 +2,7 @@ package handler
 
 import (
 	"quotes-api/config"
+	"quotes-api/constant"
 	"strings"
 	"time"
 
@@ -10,15 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type User struct {
-	ID       uint   `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
-}
-
-var users = []*User{
+var users = []*constant.User{
 	{ID: 0, Name: "Nika Shamiladze", Email: "zxc@gmail.com", Password: "$2a$12$0IelvstJ1QLvFZOH8GM8dOuzu/ouhBNE2DJ3GpfK79dzZ4mO5JuHu", Role: "user"},
 }
 
