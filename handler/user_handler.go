@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"quotes-api/constant"
+	"quotes-api/helper"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -46,9 +47,9 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 	_id, err := strconv.ParseUint(id, 10, 32)
 
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "cannot parse id",
-		})
+		if idErr := helper.CreateError("cannot parse id"); idErr != nil {
+			return idErr
+		}
 	}
 
 	for _, v := range quotes {
@@ -109,7 +110,9 @@ func AddQuotes(ctx *fiber.Ctx) error {
 	var body request
 
 	if err := ctx.BodyParser(&body); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON("body parse error")
+		if bodyErr := helper.CreateError("body parse error"); bodyErr != nil {
+			return bodyErr
+		}
 	}
 
 	newQuote := &constant.Quotes{
@@ -136,7 +139,9 @@ func DeleteQuotes(ctx *fiber.Ctx) error {
 	_id, err := strconv.Atoi(id)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON("params parse error")
+		if err := helper.CreateError("params parse error"); err != nil {
+			return err
+		}
 	}
 
 	for i, t := range quotes {
@@ -145,12 +150,12 @@ func DeleteQuotes(ctx *fiber.Ctx) error {
 
 			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 				"success": true,
-				"message": "Quotes successfuly deleted",
+				"message": "Quote successfuly deleted",
 			})
 		}
 	}
 
-	return ctx.Status(fiber.StatusBadRequest).JSON("soemthing is wrong")
+	return ctx.Status(fiber.StatusBadRequest).JSON("something went wrong")
 }
 
 // @Summary Get all Authors
@@ -173,9 +178,9 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 	_id, err := strconv.ParseUint(id, 10, 32)
 
 	if err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "cannot parse id",
-		})
+		if idErr := helper.CreateError("cannot parse id"); idErr != nil {
+			return idErr
+		}
 	}
 
 	for _, v := range authorGallery {
@@ -259,7 +264,9 @@ func DeleteAuthor(ctx *fiber.Ctx) error {
 	_id, err := strconv.Atoi(id)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON("params parse error")
+		if paramsErr := helper.CreateError("params parse error"); paramsErr != nil {
+			return paramsErr
+		}
 	}
 
 	for i, todo := range authorGallery {

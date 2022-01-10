@@ -48,7 +48,7 @@ func SetupUserRoutes(app *fiber.App) {
 		err := validate.Struct(user)
 		if err != nil {
 			fmt.Println(err.Error())
-			return ctx.Status(fiber.StatusOK).JSON(err.Error())
+			return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 		}
 
 		return ctx.Status(fiber.StatusOK).JSON("...")

@@ -3,6 +3,7 @@ package handler
 import (
 	"quotes-api/config"
 	"quotes-api/constant"
+	"quotes-api/helper"
 	"strings"
 	"time"
 
@@ -29,17 +30,21 @@ func Signin(ctx *fiber.Ctx) error {
 	var body Request
 
 	if err := ctx.BodyParser(&body); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "cannot parse body",
-		})
+		if bodyErr := helper.CreateError("cannot parse body"); bodyErr != nil {
+			return bodyErr
+		}
 	}
 
 	if !strings.Contains(*body.Email, "@") {
-		return ctx.Status(fiber.StatusUnauthorized).JSON("email address you entered doesn't contain '@' sign")
+		if err := helper.CreateError("email address you entered doesn't contain '@' sign"); err != nil {
+			return err
+		}
 	}
 
 	if len(*body.Password) < 6 {
-		return ctx.Status(fiber.StatusUnauthorized).JSON("password you entered is too short")
+		if err := helper.CreateError("password you entered is too short"); err != nil {
+			return err
+		}
 	}
 
 	for _, t := range users {
