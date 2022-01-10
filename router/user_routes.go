@@ -33,15 +33,15 @@ func SetupUserRoutes(app *fiber.App) {
 
 	api.Get("/test", func(ctx *fiber.Ctx) error {
 		type Test struct {
-			ID        uint   `validate:"required,omitempty"`
-			Firstname string `validate:"required"`
-			Password  string `validate:"gte=10"`
+			ID        uint   `json:"id" validate:"required,omitempty"`
+			Firstname string `json:"firstname" validate:"required"`
+			Password  string `json:"password" validate:"gte=10"`
 		}
 
 		user := Test{
 			ID:        1,
 			Firstname: "Mark",
-			Password:  "12334567890",
+			Password:  "123123k21o3k12o3",
 		}
 
 		validate := validator.New()
