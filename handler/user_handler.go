@@ -92,7 +92,7 @@ func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
 
 	for _, v := range quotes {
 		for _, t := range v.Category {
-			if category == t {
+			if strings.ToLower(category) == strings.ToLower(t) {
 				reQuotes = append(reQuotes, v)
 			}
 		}
@@ -158,7 +158,7 @@ func AuthorsFilter(ctx *fiber.Ctx) error {
 
 	for _, v := range authorGallery {
 		for _, t := range v.Category {
-			if category == t {
+			if strings.ToLower(category) == strings.ToLower(t) {
 				reAuthor = append(reAuthor, v)
 			}
 		}
@@ -210,3 +210,7 @@ func AddAuthor(ctx *fiber.Ctx) error {
 		"item":    author,
 	})
 }
+
+// func DeleteAuthor(ctx *fiber.Ctx) error {
+
+// }
