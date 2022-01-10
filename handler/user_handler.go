@@ -9,7 +9,7 @@ import (
 )
 
 type Quotes struct {
-	ID       uint64   `json:"id"`
+	ID       uint     `json:"id"`
 	Text     string   `json:"text"`
 	Author   string   `json:"author"`
 	Category []string `json:"category"`
@@ -64,7 +64,7 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 	}
 
 	for _, v := range quotes {
-		if _id == v.ID {
+		if uint(_id) == v.ID {
 			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 				"success": true,
 				"item":    *v,
@@ -109,6 +109,60 @@ func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
 			"message": "category is not defined",
 		})
 	}
+}
+
+func AddQuotes(ctx *fiber.Ctx) error {
+	type request struct {
+		Text     *string   `json:"text"`
+		Author   *string   `json:"author"`
+		Category *[]string `json:"category"`
+	}
+
+	var body request
+
+	if err := ctx.BodyParser(&body); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON("body parse error")
+	}
+
+	newQuote := &Quotes{
+		ID:       uint(len(quotes) + 1),
+		Text:     *body.Text,
+		Author:   *body.Author,
+		Category: *body.Category,
+	}
+
+	quotes = append(quotes, newQuote)
+
+	return ctx.Status(fiber.StatusOK).JSON(newQuote)
+}
+
+// @Summary Delete quote
+// @Description Delete quote
+// @Tags Authors
+// @Accept json
+// @Produce json
+// @Success 200 {object} Quotes{}
+// @Router /api/delete/quote/{id} [delete]
+func DeleteQuotes(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	_id, err := strconv.Atoi(id)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON("params parse error")
+	}
+
+	for i, t := range quotes {
+		if t.ID == uint(_id) {
+			quotes = append(quotes[0:i], quotes[i+1:]...)
+
+			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+				"success": true,
+				"message": "Quotes successfuly deleted",
+			})
+		}
+	}
+
+	return ctx.Status(fiber.StatusBadRequest).JSON("soemthing is wrong")
 }
 
 // @Summary Get all Authors
@@ -211,6 +265,27 @@ func AddAuthor(ctx *fiber.Ctx) error {
 	})
 }
 
-// func DeleteAuthor(ctx *fiber.Ctx) error {
+func DeleteAuthor(ctx *fiber.Ctx) error {
+	// Get Params ":id"
+	id := ctx.Params("id")
+	_id, err := strconv.Atoi(id)
 
-// }
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON("params parse error")
+	}
+
+	for i, todo := range authorGallery {
+		if todo.ID == uint(_id) {
+			authorGallery = append(authorGallery[0:i], authorGallery[i+1:]...)
+
+			// Response looks like {success, message}
+			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+				"success": true,
+				"message": "Author successfuly deleted",
+			})
+		}
+	}
+
+	// Server error.
+	return ctx.Status(fiber.StatusOK).JSON("something is wrong")
+}
