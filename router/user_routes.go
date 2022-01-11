@@ -14,7 +14,7 @@ func SetupUserRoutes(app *fiber.App) {
 	api := app.Group("/api", logger.New())
 
 	// Quotes
-	api.Get("/quotes/:page/:point", handler.GetQuotes)
+	api.Get("/quotes", handler.GetQuotes)
 	api.Get("/quotes/:id", handler.GetOnceQuotes)
 	api.Get("/quotes/category/:category", handler.GetOnceQuotesByFilter)
 
