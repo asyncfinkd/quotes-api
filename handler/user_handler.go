@@ -47,10 +47,16 @@ var authorGallery = []*constant.AuthorGallery{
 // @Success 200 {array} Quotes{}
 // @Router /api/quotes [get]
 func GetQuotes(ctx *fiber.Ctx) error {
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
-		"item":    quotes,
-	})
+	point := ctx.Params("point")
+
+	if point == "all" {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": true,
+			"item":    quotes,
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON("...")
 }
 
 // @Summary Get once Quotes
