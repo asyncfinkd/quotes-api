@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -10,6 +11,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 )
+
+// Database instance
+var db *sql.DB
 
 // Create Fake DB for Quotes
 var quotes = []*constant.Quotes{
@@ -121,9 +125,9 @@ func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
 
 func AddQuotes(ctx *fiber.Ctx) error {
 	type request struct {
-		Text     *string   `json:"text"`
-		Author   *string   `json:"author"`
-		Category *[]string `json:"category"`
+		Text *string `json:"text"`
+		// Author *string `json:"author"`
+		// Category *[]string `json:"category"`
 	}
 
 	var body request
@@ -134,16 +138,34 @@ func AddQuotes(ctx *fiber.Ctx) error {
 		}
 	}
 
-	newQuote := &constant.Quotes{
-		ID:       uint(len(quotes) + 1),
-		Text:     *body.Text,
-		Author:   *body.Author,
-		Category: *body.Category,
+	rows, err := db.Query("INSERT INTO quotes (text) VALUES($1)", body.Text)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON("...")
+	}
+	defer rows.Close()
+	result := request{}
+
+	for rows.Next() {
+		res := request{}
+		if err := rows.Scan(&res.Text); err != nil {
+			return err
+		}
+
+		result.Text = res.Text
 	}
 
-	quotes = append(quotes, newQuote)
+	fmt.Println(rows)
 
-	return ctx.Status(fiber.StatusOK).JSON(newQuote)
+	// newQuote := &constant.Quotes{
+	// 	ID:     uint(len(quotes) + 1),
+	// 	Text:   *body.Text,
+	// 	Author: *body.Author,
+	// 	// Category: *body.Category,
+	// }
+
+	// quotes = append(quotes, newQuote)
+
+	return ctx.Status(fiber.StatusOK).JSON("...")
 }
 
 // @Summary Delete quote

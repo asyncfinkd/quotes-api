@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"quotes-api/config"
+	"quotes-api/helper"
 	"quotes-api/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -81,6 +82,51 @@ func main() {
 
 		fmt.Println(rows)
 		return ctx.Status(fiber.StatusOK).JSON(&rows)
+	})
+
+	app.Post("/tt/xx", func(ctx *fiber.Ctx) error {
+		type request struct {
+			Text *string `json:"text"`
+			// Author *string `json:"author"`
+			// Category *[]string `json:"category"`
+		}
+
+		var body request
+
+		if err := ctx.BodyParser(&body); err != nil {
+			if bodyErr := helper.CreateError("body parse error"); bodyErr != nil {
+				return bodyErr
+			}
+		}
+
+		rows, err := db.Query("INSERT INTO quotes (text) VALUES($1)", body.Text)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON("...")
+		}
+		defer rows.Close()
+		result := request{}
+
+		for rows.Next() {
+			res := request{}
+			if err := rows.Scan(&res.Text); err != nil {
+				return err
+			}
+
+			result.Text = res.Text
+		}
+
+		fmt.Println(rows)
+
+		// newQuote := &constant.Quotes{
+		// 	ID:     uint(len(quotes) + 1),
+		// 	Text:   *body.Text,
+		// 	Author: *body.Author,
+		// 	// Category: *body.Category,
+		// }
+
+		// quotes = append(quotes, newQuote)
+
+		return ctx.Status(fiber.StatusOK).JSON("...")
 	})
 
 	router.SetupUserRoutes(app)
