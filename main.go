@@ -22,7 +22,7 @@ const (
 	port     = 5432 // Default port
 	user     = "nikashamiladze"
 	password = "none"
-	dbname   = "perntodo"
+	dbname   = "quotes"
 )
 
 // Connect function
@@ -76,12 +76,11 @@ func main() {
 				return err // Exit if we get an error
 			}
 
-			// Append Employee to Employees
 			result.Todos = append(result.Todos, employee)
 		}
 
-		fmt.Println(result)
-		return ctx.Status(fiber.StatusOK).JSON(result)
+		fmt.Println(rows)
+		return ctx.Status(fiber.StatusOK).JSON(&rows)
 	})
 
 	router.SetupUserRoutes(app)
