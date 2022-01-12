@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"database/sql"
 	"fmt"
 	"strconv"
 	"strings"
@@ -13,9 +12,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 )
-
-// Database instance
-var db *sql.DB
 
 // Create Fake DB for Quotes
 var quotes = []*constant.Quotes{
