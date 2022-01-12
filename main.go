@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"quotes-api/config"
+
+	"quotes-api/database"
+	"quotes-api/models"
 	"quotes-api/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,31 +14,6 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
-
-// Database instance
-var db *sql.DB
-
-// Database settings
-const (
-	host     = "localhost"
-	port     = 5432 // Default port
-	user     = "nikashamiladze"
-	password = "none"
-	dbname   = "quotes"
-)
-
-// Connect function
-func Connect() error {
-	var err error
-	db, err = sql.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname))
-	if err != nil {
-		return err
-	}
-	if err = db.Ping(); err != nil {
-		return err
-	}
-	return nil
-}
 
 type Todo struct {
 	Id     string         `json:"id"`
@@ -55,33 +32,40 @@ type Todos struct {
 
 func main() {
 	// Connect with database
-	if err := Connect(); err != nil {
-		log.Fatal(err)
-	}
+	database.ConnectDb()
+	// if err := Connect(); err != nil {
+	// log.Fatal(err)
+	// }
 
 	app := fiber.New()
 
 	app.Use(cors.New())
 
-	app.Get("/test/db", func(ctx *fiber.Ctx) error {
-		rows, err := db.Query("SELECT * FROM quotes")
-		if err != nil {
-			return ctx.Status(500).SendString(err.Error())
-		}
-		defer rows.Close()
-		result := Todos{}
+	app.Get("/find/db", func(ctx *fiber.Ctx) error {
+		quotes := []models.Quotes{}
+		database.DB.Db.Find(&quotes)
 
-		for rows.Next() {
-			employee := Todo{}
-			if err := rows.Scan(&employee.Id, &employee.Text, &employee.Author); err != nil {
-				return err // Exit if we get an error
-			}
-
-			result.Todos = append(result.Todos, employee)
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(result)
+		return ctx.Status(200).JSON(quotes)
 	})
+	// app.Get("/test/db", func(ctx *fiber.Ctx) error {
+	// 	rows, err := db.Query("SELECT * FROM quotes")
+	// 	if err != nil {
+	// 		return ctx.Status(500).SendString(err.Error())
+	// 	}
+	// 	defer rows.Close()
+	// 	result := Todos{}
+
+	// 	for rows.Next() {
+	// 		employee := Todo{}
+	// 		if err := rows.Scan(&employee.Id, &employee.Text, &employee.Author); err != nil {
+	// 			return err // Exit if we get an error
+	// 		}
+
+	// 		result.Todos = append(result.Todos, employee)
+	// 	}
+
+	// 	return ctx.Status(fiber.StatusOK).JSON(result)
+	// })
 
 	router.SetupUserRoutes(app)
 	router.SetupAuthRoutes(app)
