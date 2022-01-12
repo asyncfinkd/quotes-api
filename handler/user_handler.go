@@ -129,48 +129,17 @@ func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
 }
 
 func AddQuotes(ctx *fiber.Ctx) error {
-	type request struct {
-		Text *string `json:"text"`
-		// Author *string `json:"author"`
-		// Category *[]string `json:"category"`
+	quote := new(models.Quotes)
+	if err := ctx.BodyParser(quote); err != nil {
+		return ctx.Status(400).JSON(err.Error())
 	}
 
-	var body request
+	database.DB.Db.Create(&quote)
 
-	if err := ctx.BodyParser(&body); err != nil {
-		if bodyErr := helper.CreateError("body parse error"); bodyErr != nil {
-			return bodyErr
-		}
-	}
-
-	rows, err := db.Query("INSERT INTO quotes (text) VALUES($1)", body.Text)
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON("...")
-	}
-	defer rows.Close()
-	result := request{}
-
-	for rows.Next() {
-		res := request{}
-		if err := rows.Scan(&res.Text); err != nil {
-			return err
-		}
-
-		result.Text = res.Text
-	}
-
-	fmt.Println(rows)
-
-	// newQuote := &constant.Quotes{
-	// 	ID:     uint(len(quotes) + 1),
-	// 	Text:   *body.Text,
-	// 	Author: *body.Author,
-	// 	// Category: *body.Category,
-	// }
-
-	// quotes = append(quotes, newQuote)
-
-	return ctx.Status(fiber.StatusOK).JSON("...")
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Quote successfully added.",
+	})
 }
 
 // @Summary Delete quote
@@ -190,18 +159,13 @@ func DeleteQuotes(ctx *fiber.Ctx) error {
 		}
 	}
 
-	for i, t := range quotes {
-		if t.ID == uint(_id) {
-			quotes = append(quotes[0:i], quotes[i+1:]...)
+	quote := []models.Quotes{}
+	database.DB.Db.Where("id = ?", _id).Delete(&quote)
 
-			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-				"success": true,
-				"message": "Quote successfuly deleted",
-			})
-		}
-	}
-
-	return ctx.Status(fiber.StatusBadRequest).JSON("something went wrong")
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "quote successfully deleted.",
+	})
 }
 
 // @Summary Get all Authors
