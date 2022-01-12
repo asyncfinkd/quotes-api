@@ -21,6 +21,7 @@ func SetupUserRoutes(app *fiber.App) {
 	// Quotes TODO
 	api.Post("/add/quote", handler.AddQuotes)
 	api.Delete("/delete/quote/:id", handler.DeleteQuotes)
+	api.Patch("/edit/quote/:id", handler.UpdateQuotes)
 
 	// Authors
 	api.Get("/authors", handler.GetAuthors)

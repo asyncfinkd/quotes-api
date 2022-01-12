@@ -164,6 +164,18 @@ func DeleteQuotes(ctx *fiber.Ctx) error {
 	})
 }
 
+func UpdateQuotes(ctx *fiber.Ctx) error {
+	quote := []models.Quotes{}
+	data := new(models.Quotes)
+	if err := ctx.BodyParser(data); err != nil {
+		return ctx.Status(400).JSON(err.Error())
+	}
+
+	database.DB.Db.Model(&quote).Where("text = ? author = ? id = ?", data.Text, data.Author, data.Id)
+
+	return ctx.Status(fiber.StatusOK).JSON("...")
+}
+
 // @Summary Get all Authors
 // @Description Get all Authors
 // @Tags Authors
