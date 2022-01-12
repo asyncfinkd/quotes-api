@@ -80,18 +80,18 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 		}
 	}
 
-	for _, v := range quotes {
-		if uint(_id) == v.ID {
-			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-				"success": true,
-				"item":    *v,
-			})
-		}
+	quote := []models.Quotes{}
+	database.DB.Db.Model(&quote).Where("id = ?", _id).Find(&quote)
+	if len(quote) == 0 {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": true,
+			"message": "item is not found",
+		})
 	}
 
-	return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-		"success": false,
-		"message": "something is wrong.",
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    quote,
 	})
 }
 
