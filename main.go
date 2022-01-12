@@ -1,12 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"quotes-api/config"
 
 	"quotes-api/database"
-	"quotes-api/models"
 	"quotes-api/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,17 +12,6 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
-
-type Todo struct {
-	Id     string         `json:"id"`
-	Text   string         `json:"text"`
-	Author sql.NullString `json:"author"`
-}
-
-// Employees struct
-type Todos struct {
-	Todos []Todo `json:"employees"`
-}
 
 // @title Quotes App
 // @version 1.0
@@ -41,12 +28,6 @@ func main() {
 
 	app.Use(cors.New())
 
-	app.Get("/find/db", func(ctx *fiber.Ctx) error {
-		quotes := []models.Quotes{}
-		database.DB.Db.Find(&quotes)
-
-		return ctx.Status(200).JSON(quotes)
-	})
 	// app.Get("/test/db", func(ctx *fiber.Ctx) error {
 	// 	rows, err := db.Query("SELECT * FROM quotes")
 	// 	if err != nil {

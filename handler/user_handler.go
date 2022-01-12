@@ -7,7 +7,9 @@ import (
 	"strings"
 
 	"quotes-api/constant"
+	"quotes-api/database"
 	"quotes-api/helper"
+	"quotes-api/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -51,6 +53,9 @@ var authorGallery = []*constant.AuthorGallery{
 // @Success 200 {array} Quotes{}
 // @Router /api/quotes [get]
 func GetQuotes(ctx *fiber.Ctx) error {
+	quotes := []models.Quotes{}
+	database.DB.Db.Find(&quotes)
+
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"item":    quotes,
