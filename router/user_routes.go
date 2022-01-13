@@ -24,7 +24,7 @@ func SetupUserRoutes(app *fiber.App) {
 	// api.Patch("/edit/quote/:id", handler.UpdateQuotes)
 
 	// // Authors
-	// api.Get("/authors", handler.GetAuthors)
+	api.Get("/authors", handler.GetAuthors)
 	// api.Get("/authors/:id", handler.GetOnceAuthors)
 	// api.Get("/authors/category/:category", handler.AuthorsFilter)
 

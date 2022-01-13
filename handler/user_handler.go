@@ -32,11 +32,6 @@ var quotes = []*constant.Quotes{
 	{ID: 18, Text: "Everybody has talent, but ability takes hard work.", Author: "Michael Jordan", Category: []string{"Motivation"}},
 }
 
-// Create Fake DB for Authors
-var authorGallery = []*constant.AuthorGallery{
-	{ID: 1, Name: "Salvador Dali", Url: "salvador-dali.jpeg", Category: []string{"Artist"}},
-}
-
 // @Summary Get all Quotes
 // @Description Get all Quotes
 // @Tags Quotes
@@ -181,19 +176,31 @@ func GetQuotes(ctx *fiber.Ctx) error {
 // 	return ctx.Status(fiber.StatusOK).JSON("...")
 // }
 
-// // @Summary Get all Authors
-// // @Description Get all Authors
-// // @Tags Authors
-// // @Accept json
-// // @Produce json
-// // @Success 200 {array} AuthorGallery{}
-// // @Router /api/authors [get]
-// func GetAuthors(ctx *fiber.Ctx) error {
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": true,
-// 		"item":    authorGallery,
-// 	})
-// }
+// @Summary Get all Authors
+// @Description Get all Authors
+// @Tags Authors
+// @Accept json
+// @Produce json
+// @Success 200 {array} AuthorGallery{}
+// @Router /api/authors [get]
+func GetAuthors(ctx *fiber.Ctx) error {
+	query := bson.D{{}}
+	cursor, err := database.Global().Db.Collection("authors").Find(ctx.Context(), query)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	var authors []models.Authors = make([]models.Authors, 0)
+
+	if err := cursor.All(ctx.Context(), &authors); err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    authors,
+	})
+}
 
 // func GetOnceAuthors(ctx *fiber.Ctx) error {
 // 	id := ctx.Params("id")
