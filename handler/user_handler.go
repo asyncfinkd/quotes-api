@@ -46,20 +46,20 @@ var authorGallery = []*constant.AuthorGallery{
 // @Router /api/quotes [get]
 func GetQuotes(ctx *fiber.Ctx) error {
 	query := bson.D{{}}
-	cursor, err := database.Global().Db.Collection("authors").Find(ctx.Context(), query)
+	cursor, err := database.Global().Db.Collection("quotes").Find(ctx.Context(), query)
 	if err != nil {
 		return ctx.Status(500).SendString(err.Error())
 	}
 
-	var authors []models.Authors = make([]models.Authors, 0)
+	var quotes []models.Quotes = make([]models.Quotes, 0)
 
-	if err := cursor.All(ctx.Context(), &authors); err != nil {
+	if err := cursor.All(ctx.Context(), &quotes); err != nil {
 		return ctx.Status(500).SendString(err.Error())
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
-		"item":    authors,
+		"item":    quotes,
 	})
 }
 
