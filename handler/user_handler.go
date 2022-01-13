@@ -36,6 +36,12 @@ var quotes = []*constant.Quotes{
 	{ID: 18, Text: "Everybody has talent, but ability takes hard work.", Author: "Michael Jordan", Category: []string{"Motivation"}},
 }
 
+type AuthorGallery struct {
+	Url      string   `json:"url"`
+	Category []string `json:"category"`
+	Name     string   `json:"name"`
+}
+
 // @Summary Get all Quotes
 // @Description Get all Quotes
 // @Tags Quotes
@@ -276,12 +282,6 @@ func AddAuthor(ctx *fiber.Ctx) error {
 	ctx.SaveFile(file, fmt.Sprintf("./uploads/images/%s", file.Filename))
 
 	collection := database.Global().Db.Collection("authors")
-
-	type AuthorGallery struct {
-		Url      string   `json:"url"`
-		Category []string `json:"category"`
-		Name     string   `json:"name"`
-	}
 
 	author := &AuthorGallery{
 		Name:     nameValue,
