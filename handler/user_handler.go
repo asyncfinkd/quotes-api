@@ -140,19 +140,26 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 // 	}
 // }
 
-// func AddQuotes(ctx *fiber.Ctx) error {
-// 	quote := new(models.Quotes)
-// 	if err := ctx.BodyParser(quote); err != nil {
-// 		return ctx.Status(400).JSON(err.Error())
-// 	}
+func AddQuotes(ctx *fiber.Ctx) error {
+	collection := database.Global().Db.Collection("quotes")
+	quote := new(models.Quotes)
 
-// 	database.DB.Db.Create(&quote)
+	if err := ctx.BodyParser(quote); err != nil {
+		return ctx.Status(400).SendString(err.Error())
+	}
 
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": true,
-// 		"message": "Quote successfully added.",
-// 	})
-// }
+	quote.ID = ""
+
+	_, err := collection.InsertOne(ctx.Context(), quote)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	return ctx.Status(201).JSON(fiber.Map{
+		"success": true,
+		"message": "quote successfully added.",
+	})
+}
 
 // // @Summary Delete quote
 // // @Description Delete quote
