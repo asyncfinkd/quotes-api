@@ -92,21 +92,6 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 	})
 }
 
-// 	quote := []models.Quotes{}
-// 	database.DB.Db.Model(&quote).Where("id = ?", _id).Find(&quote)
-// 	if len(quote) == 0 {
-// 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 			"success": true,
-// 			"message": "item is not found",
-// 		})
-// 	}
-
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": true,
-// 		"item":    quote,
-// 	})
-// }
-
 // // @Summary Get Quotes by Category
 // // @Description Get Quotes by Category
 // // @Tags Quotes
