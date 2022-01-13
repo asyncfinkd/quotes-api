@@ -67,17 +67,6 @@ func GetQuotes(ctx *fiber.Ctx) error {
 // @Produce json
 // @Success 200 {object} Quotes{}
 // @Router /api/quotes/{id} [get]
-// func GetOnceQuotes(ctx *fiber.Ctx) error {
-// 	id := ctx.Params("id")
-
-// 	_id, err := strconv.ParseUint(id, 10, 32)
-
-// 	if err != nil {
-// 		if idErr := helper.CreateError("cannot parse id"); idErr != nil {
-// 			return idErr
-// 		}
-// 	}
-
 func GetOnceQuotes(ctx *fiber.Ctx) error {
 	params := ctx.Params("id")
 
@@ -229,31 +218,30 @@ func GetAuthors(ctx *fiber.Ctx) error {
 	})
 }
 
-// func GetOnceAuthors(ctx *fiber.Ctx) error {
-// 	id := ctx.Params("id")
+func GetOnceAuthors(ctx *fiber.Ctx) error {
+	params := ctx.Params("id")
 
-// 	_id, err := strconv.ParseUint(id, 10, 32)
+	_id, err := primitive.ObjectIDFromHex(params)
+	if err != nil {
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": false,
+			"message": "not found quote",
+		})
+	}
 
-// 	if err != nil {
-// 		if idErr := helper.CreateError("cannot parse id"); idErr != nil {
-// 			return idErr
-// 		}
-// 	}
+	filter := bson.D{{"_id", _id}}
 
-// 	for _, v := range authorGallery {
-// 		if _id == uint64(v.ID) {
-// 			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 				"success": true,
-// 				"item":    v,
-// 			})
-// 		}
-// 	}
+	var result models.Authors
 
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": false,
-// 		"message": "Information not found on server",
-// 	})
-// }
+	if err := database.Global().Db.Collection("authors").FindOne(ctx.Context(), filter).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    result,
+	})
+}
 
 // func AuthorsFilter(ctx *fiber.Ctx) error {
 // 	category := ctx.Params("category")
