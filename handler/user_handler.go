@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"log"
 	"quotes-api/constant"
 	"quotes-api/database"
 	models "quotes-api/models/quotes"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Create Fake DB for Quotes
@@ -75,6 +77,31 @@ func GetQuotes(ctx *fiber.Ctx) error {
 // 			return idErr
 // 		}
 // 	}
+
+func GetOnceQuotes(ctx *fiber.Ctx) error {
+	params := ctx.Params("id")
+
+	_id, err := primitive.ObjectIDFromHex(params)
+	if err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": "not found quote",
+		})
+	}
+
+	filter := bson.D{{"_id", _id}}
+
+	var result models.Quotes
+
+	if err := database.Global().Db.Collection("quotes").FindOne(ctx.Context(), filter).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    result,
+	})
+}
 
 // 	quote := []models.Quotes{}
 // 	database.DB.Db.Model(&quote).Where("id = ?", _id).Find(&quote)
