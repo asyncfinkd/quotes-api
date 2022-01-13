@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"quotes-api/constant"
 	"quotes-api/database"
 	models "quotes-api/models/quotes"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
@@ -261,39 +263,43 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 // 	}
 // }
 
-// func AddAuthor(ctx *fiber.Ctx) error {
-// 	// Get Params "category"
-// 	category := ctx.Params("category")
-// 	splitedCategory := strings.Split(category, "&")
+func AddAuthor(ctx *fiber.Ctx) error {
+	category := ctx.Params("category")
+	splitedCategory := strings.Split(category, "&")
 
-// 	// File Upload "field -> document"
-// 	file, err := ctx.FormFile("document")
+	file, err := ctx.FormFile("document")
+	if err != nil {
+		return err
+	}
 
-// 	if err != nil {
-// 		return err
-// 	}
+	nameValue := ctx.FormValue("Name")
+	ctx.SaveFile(file, fmt.Sprintf("./uploads/images/%s", file.Filename))
 
-// 	// Save value to form-data
-// 	nameValue := ctx.FormValue("Name")
+	collection := database.Global().Db.Collection("authors")
 
-// 	// Save file to root directory:
-// 	ctx.SaveFile(file, fmt.Sprintf("./uploads/images/%s", file.Filename))
+	type AuthorGallery struct {
+		Url      string   `json:"url"`
+		Category []string `json:"category"`
+		Name     string   `json:"name"`
+	}
 
-// 	// Fill Array
-// 	author := &constant.AuthorGallery{
-// 		ID:       uint(len(authorGallery) + 1),
-// 		Name:     nameValue,
-// 		Category: splitedCategory,
-// 		Url:      file.Filename,
-// 	}
+	author := &AuthorGallery{
+		Name:     nameValue,
+		Category: splitedCategory,
+		Url:      file.Filename,
+	}
 
-// 	authorGallery = append(authorGallery, author)
+	xml, err := collection.InsertOne(ctx.Context(), author)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+	fmt.Println(xml)
 
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": true,
-// 		"item":    author,
-// 	})
-// }
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "author successfuly added.",
+	})
+}
 
 // func DeleteAuthor(ctx *fiber.Ctx) error {
 // 	// Get Params ":id"

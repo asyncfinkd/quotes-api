@@ -23,13 +23,13 @@ func SetupUserRoutes(app *fiber.App) {
 	// api.Delete("/delete/quote/:id", handler.DeleteQuotes)
 	// api.Patch("/edit/quote/:id", handler.UpdateQuotes)
 
-	// // Authors
+	// Authors
 	api.Get("/authors", handler.GetAuthors)
 	api.Get("/authors/:id", handler.GetOnceAuthors)
 	// api.Get("/authors/category/:category", handler.AuthorsFilter)
 
-	// // Authors TODO
-	// api.Post("/add/author/:category", handler.AddAuthor)
+	// Authors TODO
+	api.Post("/add/author/:category", handler.AddAuthor)
 	// api.Delete("/delete/author/:id", handler.DeleteAuthor)
 
 	api.Get("/test", func(ctx *fiber.Ctx) error {
