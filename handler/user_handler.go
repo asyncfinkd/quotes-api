@@ -227,7 +227,7 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 	if err != nil {
 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 			"success": false,
-			"message": "not found autor",
+			"message": "not found author",
 		})
 	}
 
