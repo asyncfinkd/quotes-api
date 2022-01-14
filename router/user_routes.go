@@ -20,7 +20,7 @@ func SetupUserRoutes(app *fiber.App) {
 
 	// Quotes TODO
 	api.Post("/add/quote", handler.AddQuotes)
-	// api.Delete("/delete/quote/:id", handler.DeleteQuotes)
+	api.Delete("/delete/quote/:id", handler.DeleteQuotes)
 	// api.Patch("/edit/quote/:id", handler.UpdateQuotes)
 
 	// Authors
@@ -30,7 +30,7 @@ func SetupUserRoutes(app *fiber.App) {
 
 	// Authors TODO
 	api.Post("/add/author/:category", handler.AddAuthor)
-	// api.Delete("/delete/author/:id", handler.DeleteAuthor)
+	api.Delete("/delete/author/:id", handler.DeleteAuthor)
 
 	api.Get("/test", func(ctx *fiber.Ctx) error {
 		type Test struct {

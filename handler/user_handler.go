@@ -156,31 +156,37 @@ func AddQuotes(ctx *fiber.Ctx) error {
 	})
 }
 
-// // @Summary Delete quote
-// // @Description Delete quote
-// // @Tags Authors
-// // @Accept json
-// // @Produce json
-// // @Success 200 {object} Quotes{}
-// // @Router /api/delete/quote/{id} [delete]
-// func DeleteQuotes(ctx *fiber.Ctx) error {
-// 	id := ctx.Params("id")
-// 	_id, err := strconv.Atoi(id)
+// @Summary Delete quote
+// @Description Delete quote
+// @Tags Authors
+// @Accept json
+// @Produce json
+// @Success 200 {object} Quotes{}
+// @Router /api/delete/quote/{id} [delete]
+func DeleteQuotes(ctx *fiber.Ctx) error {
+	id, err := primitive.ObjectIDFromHex(
+		ctx.Params("id"),
+	)
+	if err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"success": true,
+			"message": "not found id",
+		})
+	}
 
-// 	if err != nil {
-// 		if err := helper.CreateError("params parse error"); err != nil {
-// 			return err
-// 		}
-// 	}
+	query := bson.D{{Key: "_id", Value: id}}
+	result, err := database.Global().Db.Collection("quotes").DeleteOne(ctx.Context(), &query)
 
-// 	quote := []models.Quotes{}
-// 	database.DB.Db.Where("id = ?", _id).Delete(&quote)
+	if err != nil {
+		return ctx.SendStatus(500)
+	}
 
-// 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 		"success": true,
-// 		"message": "quote successfully deleted.",
-// 	})
-// }
+	if result.DeletedCount < 1 {
+		return ctx.SendStatus(404)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON("...")
+}
 
 // func UpdateQuotes(ctx *fiber.Ctx) error {
 // 	quote := []models.Quotes{}
@@ -306,29 +312,27 @@ func AddAuthor(ctx *fiber.Ctx) error {
 	})
 }
 
-// func DeleteAuthor(ctx *fiber.Ctx) error {
-// 	// Get Params ":id"
-// 	id := ctx.Params("id")
-// 	_id, err := strconv.Atoi(id)
+func DeleteAuthor(ctx *fiber.Ctx) error {
+	_id, err := primitive.ObjectIDFromHex(
+		ctx.Params("id"),
+	)
+	if err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"success": true,
+			"message": "not found id",
+		})
+	}
 
-// 	if err != nil {
-// 		if paramsErr := helper.CreateError("params parse error"); paramsErr != nil {
-// 			return paramsErr
-// 		}
-// 	}
+	query := bson.D{{Key: "_id", Value: _id}}
+	result, err := database.Global().Db.Collection("authors").DeleteOne(ctx.Context(), &query)
 
-// 	for i, todo := range authorGallery {
-// 		if todo.ID == uint(_id) {
-// 			authorGallery = append(authorGallery[0:i], authorGallery[i+1:]...)
+	if err != nil {
+		return ctx.SendStatus(500)
+	}
 
-// 			// Response looks like {success, message}
-// 			return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 				"success": true,
-// 				"message": "Author successfuly deleted",
-// 			})
-// 		}
-// 	}
+	if result.DeletedCount < 1 {
+		return ctx.SendStatus(404)
+	}
 
-// 	// Server error.
-// 	return ctx.Status(fiber.StatusOK).JSON("something is wrong")
-// }
+	return ctx.Status(fiber.StatusOK).JSON("...")
+}
