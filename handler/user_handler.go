@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"quotes-api/constant"
 	"quotes-api/database"
 	models "quotes-api/models/quotes"
@@ -91,7 +90,10 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 	var result models.Quotes
 
 	if err := database.Global().Db.Collection("quotes").FindOne(ctx.Context(), filter).Decode(&result); err != nil {
-		log.Fatal(err)
+		return ctx.Status(500).JSON(fiber.Map{
+			"success": true,
+			"message": "not found quote",
+		})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -225,7 +227,7 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 	if err != nil {
 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 			"success": false,
-			"message": "not found quote",
+			"message": "not found autor",
 		})
 	}
 
@@ -234,7 +236,10 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 	var result models.Authors
 
 	if err := database.Global().Db.Collection("authors").FindOne(ctx.Context(), filter).Decode(&result); err != nil {
-		log.Fatal(err)
+		return ctx.Status(500).JSON(fiber.Map{
+			"success": true,
+			"message": "not found author",
+		})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
