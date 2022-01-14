@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"quotes-api/constant"
 	"quotes-api/database"
 	models "quotes-api/models/quotes"
 	"strings"
@@ -13,27 +12,27 @@ import (
 )
 
 // Create Fake DB for Quotes
-var quotes = []*constant.Quotes{
-	{ID: 1, Text: "There is only one thing that makes a dream impossible to achieve: the fear of failure.", Author: "Paulo Coelho", Category: []string{"Motivation"}},
-	{ID: 2, Text: "Have no fear of perfection - you'll never reach it.", Author: "Salvador Dalí", Category: []string{"Motivation"}},
-	{ID: 3, Text: "Whatever you are, be a good one.", Author: "Abraham Lincoln", Category: []string{"Motivation"}},
-	{ID: 4, Text: "Make everything as simple as possible, but not simpler.", Author: "Albert Einstein", Category: []string{"Motivation"}},
-	{ID: 4, Text: "Creativity is intelligence having fun.", Author: "Albert Einstein", Category: []string{"Motivation"}},
-	{ID: 5, Text: "The best revenge is massive success.", Author: "Frank Sinatra", Category: []string{"Motivation"}},
-	{ID: 6, Text: "If people never did silly things, nothing intelligent would ever get done.", Author: "Ludwig Wittgenstein", Category: []string{"Motivation"}},
-	{ID: 7, Text: "The two most important days in your life are the day you are born and the day you find out why.", Author: "Mark Twain", Category: []string{"Motivation"}},
-	{ID: 8, Text: "Pain is inevitable. Suffering is optional.", Author: "Haruki Murakami", Category: []string{"Motivation"}},
-	{ID: 9, Text: "The only truly secure system is one that is powered off, cast in a block of concrete and sealed in a lead-lined room with armed guards.", Author: "Gene Spafford", Category: []string{"Cyber Security"}},
-	{ID: 10, Text: "The more you know, the more you realize you know nothing.", Author: "Socrates", Category: []string{"Motivation"}},
-	{ID: 11, Text: "If you reveal your secrets to the wind, you should not blame the wind for revealing them to the trees.", Author: "Kahlil Gibran", Category: []string{"Motivation"}},
-	{ID: 12, Text: "The best way out is always through.", Author: "Robert Frost", Category: []string{"Motivation"}},
-	{ID: 13, Text: "If you don't risk anything, you risk even more.", Author: "Erica Jong", Category: []string{"Motivation"}},
-	{ID: 14, Text: "There are far, far better things ahead than any we leave behind.", Author: "C.S. Lewis", Category: []string{"Motivation"}},
-	{ID: 15, Text: "Follow your inner moonlight. Don't hide the madness.", Author: "Allen Ginsberg", Category: []string{"Motivation"}},
-	{ID: 16, Text: "The harder the conflict, the more glorious the triumph.", Author: "Thomas Paine", Category: []string{"Motivation"}},
-	{ID: 17, Text: "Every strike brings me closer to the next home run.", Author: "Babe Ruth", Category: []string{"Motivation"}},
-	{ID: 18, Text: "Everybody has talent, but ability takes hard work.", Author: "Michael Jordan", Category: []string{"Motivation"}},
-}
+// var quotes = []*constant.Quotes{
+// 	{ID: 1, Text: "There is only one thing that makes a dream impossible to achieve: the fear of failure.", Author: "Paulo Coelho", Category: []string{"Motivation"}},
+// 	{ID: 2, Text: "Have no fear of perfection - you'll never reach it.", Author: "Salvador Dalí", Category: []string{"Motivation"}},
+// 	{ID: 3, Text: "Whatever you are, be a good one.", Author: "Abraham Lincoln", Category: []string{"Motivation"}},
+// 	{ID: 4, Text: "Make everything as simple as possible, but not simpler.", Author: "Albert Einstein", Category: []string{"Motivation"}},
+// 	{ID: 4, Text: "Creativity is intelligence having fun.", Author: "Albert Einstein", Category: []string{"Motivation"}},
+// 	{ID: 5, Text: "The best revenge is massive success.", Author: "Frank Sinatra", Category: []string{"Motivation"}},
+// 	{ID: 6, Text: "If people never did silly things, nothing intelligent would ever get done.", Author: "Ludwig Wittgenstein", Category: []string{"Motivation"}},
+// 	{ID: 7, Text: "The two most important days in your life are the day you are born and the day you find out why.", Author: "Mark Twain", Category: []string{"Motivation"}},
+// 	{ID: 8, Text: "Pain is inevitable. Suffering is optional.", Author: "Haruki Murakami", Category: []string{"Motivation"}},
+// 	{ID: 9, Text: "The only truly secure system is one that is powered off, cast in a block of concrete and sealed in a lead-lined room with armed guards.", Author: "Gene Spafford", Category: []string{"Cyber Security"}},
+// 	{ID: 10, Text: "The more you know, the more you realize you know nothing.", Author: "Socrates", Category: []string{"Motivation"}},
+// 	{ID: 11, Text: "If you reveal your secrets to the wind, you should not blame the wind for revealing them to the trees.", Author: "Kahlil Gibran", Category: []string{"Motivation"}},
+// 	{ID: 12, Text: "The best way out is always through.", Author: "Robert Frost", Category: []string{"Motivation"}},
+// 	{ID: 13, Text: "If you don't risk anything, you risk even more.", Author: "Erica Jong", Category: []string{"Motivation"}},
+// 	{ID: 14, Text: "There are far, far better things ahead than any we leave behind.", Author: "C.S. Lewis", Category: []string{"Motivation"}},
+// 	{ID: 15, Text: "Follow your inner moonlight. Don't hide the madness.", Author: "Allen Ginsberg", Category: []string{"Motivation"}},
+// 	{ID: 16, Text: "The harder the conflict, the more glorious the triumph.", Author: "Thomas Paine", Category: []string{"Motivation"}},
+// 	{ID: 17, Text: "Every strike brings me closer to the next home run.", Author: "Babe Ruth", Category: []string{"Motivation"}},
+// 	{ID: 18, Text: "Everybody has talent, but ability takes hard work.", Author: "Michael Jordan", Category: []string{"Motivation"}},
+// }
 
 type AuthorGallery struct {
 	Url      string   `json:"url"`
