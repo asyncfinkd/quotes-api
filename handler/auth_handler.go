@@ -48,6 +48,11 @@ func Signin(ctx *fiber.Ctx) error {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["iat"] = 0
+	claims["_id"] = result.ID
+	claims["name"] = result.Name
+	claims["email"] = result.Email
+	claims["logged"] = true
 
 	t, err := token.SignedString([]byte(config.Config("SECRET_KEY")))
 
