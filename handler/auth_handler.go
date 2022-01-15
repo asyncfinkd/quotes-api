@@ -35,7 +35,7 @@ func Signin(ctx *fiber.Ctx) error {
 	filter := bson.D{{"email", quote.Email}}
 
 	if err := collection.FindOne(ctx.Context(), filter).Decode(&result); err != nil {
-		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
 			"message": "Credentials incorrect.",
 		})
