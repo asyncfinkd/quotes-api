@@ -13,3 +13,10 @@ type Quotes struct {
 	Author   string   `json:"author,omitempty" bson:"author,omitempty"`
 	Category []string `json:"category" bson:"category,omitempty"`
 }
+
+type Users struct {
+	ID       string `json:"id,omitempty" bson:"_id,omitempty"`
+	Name     string `json:"name,omitempty" bson:"name,omitempty"`
+	Email    string `json:"email,omitempty" bson:"email,omitempty"`
+	Password string `json:"password,omitempty" bson:"password,omitempty"`
+}
