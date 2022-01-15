@@ -35,11 +35,14 @@ func Signin(ctx *fiber.Ctx) error {
 	filter := bson.D{{"email", quote.Email}}
 
 	if err := collection.FindOne(ctx.Context(), filter).Decode(&result); err != nil {
-		return ctx.SendString("...")
+		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+			"success": false,
+			"message": "Credentials incorrect.",
+		})
 	}
 
 	if !CheckPasswordHash(quote.Password, result.Password) {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "message": "Invalid password", "access_token": nil})
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "message": "Invalid password"})
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -52,7 +55,7 @@ func Signin(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return ctx.Status(200).JSON(fiber.Map{
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success":      true,
 		"message":      "you logged successfully.",
 		"access_token": t,
