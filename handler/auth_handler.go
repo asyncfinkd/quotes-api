@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+	"log"
 	"quotes-api/config"
 	"quotes-api/database"
 	models "quotes-api/models/quotes"
@@ -17,6 +19,14 @@ var SECRET_KEY = []byte("gosecretkey")
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func getHash(pwd []byte) string {
+	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(hash)
 }
 
 func Signin(ctx *fiber.Ctx) error {
@@ -64,5 +74,33 @@ func Signin(ctx *fiber.Ctx) error {
 		"success":      true,
 		"message":      "you logged successfully.",
 		"access_token": t,
+	})
+}
+
+func Signup(ctx *fiber.Ctx) error {
+	collection := database.Global().Db.Collection("users")
+	type request struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	user := new(request)
+
+	if err := ctx.BodyParser(user); err != nil {
+		return ctx.Status(400).SendString(err.Error())
+	}
+
+	user.Password = getHash([]byte(user.Password))
+	fmt.Println(user.Password)
+
+	xml, err := collection.InsertOne(ctx.Context(), user)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+	fmt.Println(xml)
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "user successfuly added.",
 	})
 }
