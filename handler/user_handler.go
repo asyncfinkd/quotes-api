@@ -101,39 +101,6 @@ func GetOnceQuotes(ctx *fiber.Ctx) error {
 	})
 }
 
-// // @Summary Get Quotes by Category
-// // @Description Get Quotes by Category
-// // @Tags Quotes
-// // @Accept json
-// // @Produce json
-// // @Success 200 {array} Quotes{}
-// // @Router /api/quotes/category/{category} [get]
-// func GetOnceQuotesByFilter(ctx *fiber.Ctx) error {
-// 	category := ctx.Params("category")
-
-// 	var reQuotes []*constant.Quotes
-
-// 	for _, v := range quotes {
-// 		for _, t := range v.Category {
-// 			if strings.ToLower(category) == strings.ToLower(t) {
-// 				reQuotes = append(reQuotes, v)
-// 			}
-// 		}
-// 	}
-
-// 	if len(reQuotes) > 0 {
-// 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 			"success": true,
-// 			"item":    reQuotes,
-// 		})
-// 	} else {
-// 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 			"success": false,
-// 			"message": "category is not defined",
-// 		})
-// 	}
-// }
-
 func AddQuotes(ctx *fiber.Ctx) error {
 	collection := database.Global().Db.Collection("quotes")
 	quote := new(models.Quotes)
@@ -186,18 +153,6 @@ func DeleteQuotes(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON("...")
 }
-
-// func UpdateQuotes(ctx *fiber.Ctx) error {
-// 	quote := []models.Quotes{}
-// 	data := new(models.Quotes)
-// 	if err := ctx.BodyParser(data); err != nil {
-// 		return ctx.Status(400).JSON(err.Error())
-// 	}
-
-// 	database.DB.Db.Model(&quote).Where("text = ? author = ? id = ?", data.Text, data.Author, data.Id)
-
-// 	return ctx.Status(fiber.StatusOK).JSON("...")
-// }
 
 // @Summary Get all Authors
 // @Description Get all Authors
