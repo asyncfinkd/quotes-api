@@ -253,31 +253,35 @@ func GetOnceAuthors(ctx *fiber.Ctx) error {
 	})
 }
 
-// func AuthorsFilter(ctx *fiber.Ctx) error {
-// 	category := ctx.Params("category")
+func GetAuthorsByFilter(ctx *fiber.Ctx) error {
+	params := ctx.Params("filter")
 
-// 	var reAuthor []*constant.AuthorGallery
+	query := bson.D{{}}
+	cursor, err := database.Global().Db.Collection("authors").Find(ctx.Context(), query)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 
-// 	for _, v := range authorGallery {
-// 		for _, t := range v.Category {
-// 			if strings.ToLower(category) == strings.ToLower(t) {
-// 				reAuthor = append(reAuthor, v)
-// 			}
-// 		}
-// 	}
+	var authors []models.Authors = make([]models.Authors, 0)
 
-// 	if len(reAuthor) > 0 {
-// 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 			"success": true,
-// 			"item":    reAuthor,
-// 		})
-// 	} else {
-// 		return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-// 			"success": false,
-// 			"message": "category is not defined",
-// 		})
-// 	}
-// }
+	if err := cursor.All(ctx.Context(), &authors); err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	var data []models.Authors
+
+	for _, v := range authors {
+		for _, t := range v.Category {
+			if strings.ToLower(params) == strings.ToLower(t) {
+				data = append(data, v)
+			}
+		}
+	}
+
+	fmt.Println(data)
+
+	return ctx.Status(200).SendString("...")
+}
 
 func AddAuthor(ctx *fiber.Ctx) error {
 	category := ctx.Params("category")
