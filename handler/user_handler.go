@@ -280,7 +280,10 @@ func GetAuthorsByFilter(ctx *fiber.Ctx) error {
 
 	fmt.Println(data)
 
-	return ctx.Status(200).SendString("...")
+	return ctx.Status(200).JSON(fiber.Map{
+		"success": true,
+		"item":    data,
+	})
 }
 
 func AddAuthor(ctx *fiber.Ctx) error {
