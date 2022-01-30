@@ -5,6 +5,8 @@ type Authors struct {
 	Name     string   `json:"name,omitempty" bson:"name,omitempty"`
 	Url      string   `json:"url,omitempty" bson:"url,omitempty"`
 	Category []string `json:"category" bson:"category"`
+	Tags     []string `json:"tags" bson:"tags"`
+	Role     string   `json:"role" bson:"role"`
 }
 
 type Quotes struct {
