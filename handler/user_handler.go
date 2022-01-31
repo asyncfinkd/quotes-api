@@ -241,6 +241,39 @@ func GetAuthorsByFilter(ctx *fiber.Ctx) error {
 	})
 }
 
+func GetAuthorsQuotes(ctx *fiber.Ctx) error {
+	params := ctx.Params("author")
+
+	query := bson.D{{}}
+	cursor, err := database.Global().Db.Collection("quotes").Find(ctx.Context(), query)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	var quotes []models.Quotes = make([]models.Quotes, 0)
+
+	if err := cursor.All(ctx.Context(), &quotes); err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	fmt.Println(quotes)
+
+	var reData []models.Quotes = make([]models.Quotes, 0)
+
+	filterParams := strings.Split(params, "%20")
+	joinedParams := strings.Join(filterParams, " ")
+	for _, v := range quotes {
+		if strings.ToLower(joinedParams) == strings.ToLower(v.Author) {
+			reData = append(reData, v)
+		}
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"item":    reData,
+	})
+}
+
 func AddAuthor(ctx *fiber.Ctx) error {
 	category := ctx.Params("category")
 	splitedCategory := strings.Split(category, "&")
