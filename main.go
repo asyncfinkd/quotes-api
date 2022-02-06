@@ -12,10 +12,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// @title Quotes App
-// @version 1.0
-// @description This is an API for Quotes Application
-
 func main() {
 	// Connect to the database
 	if err := database.Connect(); err != nil {
