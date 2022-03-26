@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-	// Connect to the database
 	if err := database.Connect(); err != nil {
 		log.Fatal(err)
 	}

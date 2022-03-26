@@ -15,7 +15,7 @@ type MongoInstance struct {
 
 var mg MongoInstance
 
-// const dbName = "fiber_test"
+const dbName = "quotes"
 const mongoURI = "mongodb+srv://giga:vivomini@rest.nl9di.mongodb.net/quotes?retryWrites=true&w=majority"
 
 func Connect() error {
@@ -25,7 +25,7 @@ func Connect() error {
 	defer cancel()
 
 	err = client.Connect(ctx)
-	db := client.Database("quotes")
+	db := client.Database(dbName)
 
 	if err != nil {
 		return err
